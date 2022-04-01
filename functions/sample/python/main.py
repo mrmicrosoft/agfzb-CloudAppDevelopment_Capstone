@@ -12,9 +12,9 @@ from ibmcloudant.cloudant_v1 import CloudantV1
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 def main(dict):
-    authenticator = IAMAuthenticator('F7FM6RvKB5x-p7mUNYAvwRTi5FymO9PbhHNWANwkE8wW')
+    authenticator = IAMAuthenticator('')
     service = CloudantV1(authenticator=authenticator)
-    service.set_service_url("https://7048706c-0b51-4bcb-8bec-0e969192e656-bluemix.cloudantnosqldb.appdomain.cloud")
+    service.set_service_url("")
     
     response = service.post_find(
         db='reviews',
