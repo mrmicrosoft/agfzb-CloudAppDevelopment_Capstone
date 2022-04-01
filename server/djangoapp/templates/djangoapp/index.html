@@ -12,18 +12,15 @@
     <script src="https://unpkg.com/bootstrap-table@1.18.2/dist/extensions/filter-control/bootstrap-table-filter-control.min.js"></script>
 
 </head>
-
-    <body>
+<body>
     <!-- Remove this line the first time you edit this file -->
-    <center><h1>Best Car DealerShip In USA</h1></center>
+    <h1 style='text-align:center'>Best Car DealerShip In USA</h1>
     <p></p>
     <!--Add a nav bar here -->
     <nav class="navbar navbar-light bg-light">
-    <div class="container-fluid">
-        <div class="navbar-header">
-              <a class="navbar-brand" href="#">Main</a>
-        </div>
-              <ul class="nav navbar-nav navbar-right">
+        <div class="container-fluid">
+            <div class="navbar-header"><a class="navbar-brand" href="#">Main</a></div>
+            <ul class="nav navbar-nav navbar-right">
                 {% if user.is_authenticated %}
                 <li>
                     <a class="btn btn-link" href="#">{{ user.first_name }}({{ user.username }})</a>
@@ -42,36 +39,25 @@
                     </form>
                 </li>
                 {% endif %}
-              </ul>
-
-        
-    </div>
-</nav>
+            </ul>
+        </div>
+    </nav>
     <!--Add a dealer table here -->
 
-    <h2><center>Dealer's Table</center></h2>
+    <h2 style='text-align:center'>Dealer's Table</h2>
     <table style="width:50%">
-  <tr>
-    <th>Firstname</th>
-    <th>Lastname</th>
-    <th>Age</th>
-  </tr>
-  <tr>
-    <td>John</td>
-    <td>Smith</td>
-    <td>25</td>
-  </tr>
-  <tr>
-    <td>Flora</td>
-    <td>Evet</td>
-    <td>30</td>
-  </tr>
-  <tr>
-    <td>James</td>
-    <td>Watson</td>
-    <td>70</td>
-  </tr>
-</table>
-    </body>
-
+        <tr>
+            <th>Firstname</th><th>Lastname</th><th>Age</th>
+        </tr>
+        <tr>
+            <td>John</td><td>Smith</td><td>25</td>
+        </tr>
+        <tr>
+            <td>Flora</td><td>Evet</td><td>30</td>
+        </tr>
+        <tr>
+            <td>James</td><td>Watson</td><td>70</td>
+        </tr>
+    </table>
+</body>
 </html>
