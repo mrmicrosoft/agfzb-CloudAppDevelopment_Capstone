@@ -20,10 +20,13 @@ def main(dict):
     service = CloudantV1(authenticator=authenticator)
     service.set_service_url(os.getenv('SERVICE_URL'))
     
-    response = service.post_find(
-        db='reviews',
-        selector={'dealership': {'$eq': int(dict["dealerId"])}},
-    ).get_result()
+    if "review" in dict.keys():
+        response = service.post_document(db='reviews', document=dict["review"]).get_result()
+    else:
+        response = service.post_find(
+            db='reviews',
+            selector={'dealership': {'$eq': int(dict["dealerId"])}},
+        ).get_result()
     
     try:
         # result_by_filter=my_database.get_query_result(selector,raw_result=True)
