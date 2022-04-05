@@ -42,6 +42,7 @@ def login_request(request):
         password = request.POST['psw']
         # Try to check if provide credential can be authenticated
         user = authenticate(username=username, password=password)
+        print("DEBUG 5:", user)
         if user is not None:
             # If user is valid, call login method to login current user
             login(request, user)
@@ -113,16 +114,16 @@ def get_dealer_details(request, dealer_id):
 
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
-    print("DEBUG **:", dealer_id)
+    
     context = {}
     dealer_url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/obentech%40gmail.com_dev/car-dealership/get-dealership"
     dealer = get_dealer_by_id_from_cf(dealer_url, id=dealer_id)
     context["dealer"] = dealer
+    context["dealer_id"] = dealer_id
     
     if request.method == 'GET':
         # Get cars for the dealer
-        #cars = CarModel.objects.filter(id=dealer_id)
-        cars = CarModel.objects.all()
+        cars = CarModel.objects.filter(id=dealer_id)
         for car in cars:
             print(car.year)
         #print(cars)
