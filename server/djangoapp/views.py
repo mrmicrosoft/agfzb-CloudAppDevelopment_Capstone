@@ -69,73 +69,63 @@ def registration_request(request):
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
+    context = {}
     if request.method == "GET":
         url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/obentech%40gmail.com_dev/car-dealership/get-dealership"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         # Concat all dealer's short name
-        output = "";
-        for dealer in dealerships:
-            template = "<h3>Dealer Full Name:" + dealer.full_name + "</h3>" + \
-                    "Dealer city:" + str(dealer.city) + "<br>" + \
-                    "Dealer address:" + dealer.address + "<br>" + \
-                    "Dealer id:" + str(dealer.id) + "<br>" + \
-                    "Location lat:" + str(dealer.lat) + "<br>" + \
-                    "Location long:" + str(dealer.long) + "<br>" + \
-                    "Dealer short name:" + str(dealer.short_name) + "<br>" + \
-                    "Dealer state:" + str(dealer.st) + "<br>" + \
-                    "Dealer zip:" + str(dealer.zip) + "<br><hr>";
-            output += template;
         
         #dealer_names = ' '.join([dealer.short_name for dealer in dealerships])
         # Return a list of dealer short name
-        return HttpResponse(output)
-
+        #return HttpResponse(output)
+        context['dealership_list'] = dealerships
+        return render(request, 'djangoapp/index.html', context)
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):
     if request.method == "GET":
         context = {}
+        context['data'] = {}
+        dealer_name = None
+        
         dealer_url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/obentech%40gmail.com_dev/car-dealership/get-dealership"
         dealers = get_dealer_by_id_from_cf(dealer_url, id=dealer_id)
+        for dealer in dealers:
+            if(dealer.id == dealer_id):
+                dealer_name = dealer.full_name
         
-        context["dealerId"] = dealer_id
+        context["data"]["dealerId"] = dealer_id
     
         review_url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/obentech%40gmail.com_dev/car-dealership/review"
         reviews = get_dealer_reviews_from_cf(review_url, id=dealer_id)
-        context["reviews"] = reviews
         
-        output = "";
-        for review in reviews:
-            template = "<h3>Name:" + review.name + "</h3>" + \
-                    "Dealership:" + str(review.dealership) + "<br>" + \
-                    "Name:" + review.name + "<br>" + \
-                    "Purchase:" + str(review.purchase) + "<br>" + \
-                    "Purchase Date:" + str(review.purchase_date) + "<br>" + \
-                    "Car Make:" + str(review.car_make) + "<br>" + \
-                    "Car Model:" + str(review.car_model) + "<br>" + \
-                    "Car Year:" + str(review.car_year) + "<br>" + \
-                    "Sentiment:" + review.sentiment + "<br>" + \
-                    "Id:" + str(review.id) + "<br><hr>";
-            output += template;
+        context["data"]["reviews"] = reviews
+        context["data"]["dealer"] = dealer_name
+        context["data"]["dealerId"] = dealer_id
         
         #review_names = ' '.join([review.name for review in reviews])
         # Return a list of dealer short name
-        return HttpResponse(output);
-        
-        #return render(request, 'djangoapp/dealer_details.html', context)
+        #return HttpResponse(output);
+        print("DEBUG 1:", dealer_name)
+        return render(request, 'djangoapp/dealer_details.html', context)
 
 # Create a `add_review` view to submit a review
-def add_review(request, id):
+def add_review(request, dealer_id):
+    print("DEBUG **:", dealer_id)
     context = {}
     dealer_url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/obentech%40gmail.com_dev/car-dealership/get-dealership"
-    dealer = get_dealer_by_id_from_cf(dealer_url, id=id)
+    dealer = get_dealer_by_id_from_cf(dealer_url, id=dealer_id)
     context["dealer"] = dealer
+    
     if request.method == 'GET':
         # Get cars for the dealer
-        cars = CarModel.objects.filter(id=id)
-        print(cars)
+        #cars = CarModel.objects.filter(id=dealer_id)
+        cars = CarModel.objects.all()
+        for car in cars:
+            print(car.year)
+        #print(cars)
         context["cars"] = cars
         
         return render(request, 'djangoapp/add_review.html', context)
@@ -148,8 +138,8 @@ def add_review(request, id):
             car = CarModel.objects.get(pk=car_id)
             review["time"] = datetime.utcnow().isoformat()
             review["name"] = username
-            review["dealership"] = id
-            review["id"] = id
+            review["dealership"] = dealer_id
+            review["id"] = dealer_id
             review["review"] = request.POST["content"]
             review["purchase"] = False
             if "purchasecheck" in request.POST:
@@ -164,7 +154,7 @@ def add_review(request, id):
             json_payload["review"] = review
             review_post_url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/obentech%40gmail.com_dev/car-dealership/review"
             
-            json_result = post_request(review_post_url, json_payload, dealerId=id)
+            json_result = post_request(review_post_url, json_payload, dealerId=dealer_id)
             print('Add Review Result:', json_result)
-        return redirect("djangoapp:dealer_details", id=id)
+        return redirect("djangoapp:dealer_details", id=dealer_id)
 

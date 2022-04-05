@@ -2,6 +2,7 @@ from django.db import models
 from django.core import serializers
 from django.utils.timezone import now
 import uuid
+import re
 import json
 
 # Create your models here.
@@ -58,7 +59,6 @@ class CarModel(models.Model):
 
 
 class CarDealer:
-
     def __init__(self, address, city, full_name, id, lat, long, short_name, st, zip):
         # Dealer address
         self.address = address
@@ -84,7 +84,6 @@ class CarDealer:
 
 
 class DealerReview:
-
     def __init__(self, dealership, name, purchase, review, purchase_date='', car_make='',
                  car_model='', car_year='', sentiment='', id=''):
         # Required attributes
@@ -99,6 +98,7 @@ class DealerReview:
         self.car_year = car_year
         self.sentiment = sentiment
         self.id = id
+        self.purchase_year = "";
 
     def __str__(self):
         return "Review: " + self.review
@@ -106,10 +106,16 @@ class DealerReview:
     def to_json(self):
         return json.dumps(self, default=lambda o: o.__dict__,
                             sort_keys=True, indent=4)
+    
+    def get_year(self):
+        matches = re.findall("[0-9]{4}", self.purchase_date)
+        if len(matches) > 0:
+            return matches[0]
+        else:
+            return "";
 
 
 class ReviewPost:
-
     def __init__(self, dealership, name, purchase, review):
         self.dealership = dealership
         self.name = name
