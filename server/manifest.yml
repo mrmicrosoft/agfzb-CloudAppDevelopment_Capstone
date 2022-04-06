@@ -1,11 +1,11 @@
   applications:
   - name: djangoapp
     routes:
-      - route: emmanueloben234.eu-gb.cf.appdomain.cloud
+      - route: emmanueloben99.eu-gb.cf.appdomain.cloud
     memory: 128M
     buildpack: python_buildpack
   - name: djangoapp-nginx
     routes:
-      - route: emmanueloben234.eu-gb.cf.appdomain.cloud
+      - route: emmanueloben99.eu-gb.cf.appdomain.cloud
     memory: 128M
     buildpack: staticfile_buildpack
