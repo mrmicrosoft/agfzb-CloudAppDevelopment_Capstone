@@ -20,7 +20,7 @@ from django.conf import settings
 from django.views.generic import RedirectView
 
 urlpatterns = [
-    #path('', RedirectView.as_view(url='djangoapp/', permanent=False)),
+    path('', RedirectView.as_view(url='djangoapp/', permanent=False)),
     path('admin/', admin.site.urls),
     path('djangoapp/', include('djangoapp.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
